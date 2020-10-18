@@ -4,16 +4,32 @@
     int yylval;
 %}
 
+digit       [0-9]
+decint      (0|[1-9]{digit}*)
+hexint      0(X|x)[0-9A-Fa-f]*+
+errorint    0{digit}+
+integer     {decint}|{hexint}
+float1      {decint}+"."+{digit}*
+exponent    (E|e)(\+|\-){digit}+
+float2      {decint}+"."+{exponent}
+double      {float1}|{float2}
 
-decint       ^(0|[1-9][0-9]*)$
-hexint       0(X|x)[0-9A-Fa-f]*+
+alphabet    [a-zA-Z]
+newline     [\n]
+whitespace  [ \t]+
+string      \"[^"\n]*\"
 
-integer      {decint}|{hexint}
+id          {alphabet}({alphabet}|{digit}|"_")*
 
 %%
-{decint}     {printf("decint - %s \n", yytext);}
-{hexint}     {printf("hexint - %s \n", yytext);}
-{integer}    {printf("integer - %s \n", yytext);}
+{integer}       {printf("integer - %s \n", yytext);}
+{double}        {printf("double - %s \n", yytext);}
+{errorint}      {printf("errorint - %s \n", yytext);}
+{alphabet}      {printf("alphabet - %s \n", yytext);}
+{newline}       {printf("\n");}
+{whitespace}    {{; /* ignore whitespace */ }}
+{string}        {printf("string - %s \n", yytext);}
+{id}            {printf("id - %s \n", yytext);}
 %%
 
 // run function
