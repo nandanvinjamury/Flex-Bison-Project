@@ -7,6 +7,9 @@ Ta Wei Chien
 ## Run Project
 apt-get install flex bison
 
-lex toy.l
-cc lex.yy.c -efl
-./a.out < sampleGiven.toy
+```
+cd dev
+lex test.l
+cc lex.yy.c
+./a.out < sample.toy
+```
