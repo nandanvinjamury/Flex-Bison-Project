@@ -136,9 +136,9 @@ true|false      {printf("%s ", yytext);}
 {whitespace}    {; /* ignore whitespace */ }
 {comment}       {; /* ignore comment */ }
 {multiComment}  {; /* ignore multi-comment */ }
-{newline}       {printf("\n");}
+
 {errorint}      {printf("errorint ");}
-.               {printf("bad words! %s \n", yytext);}
+.               {;}
 %%
 
 
