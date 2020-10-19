@@ -1,29 +1,67 @@
 %{  
     #include <stdio.h>
     #include <string.h>
-    #include "test_scanner.h"
-
-    #define MAX     150
-    #define LENGTH(x) (sizeof(x)/sizeof(*(x)))
-    #define true    1 
-    #define false   0
-
     int yylval;
-    struct {
-        int dispatch[52];
-        char symbol[MAX];
-        int next[MAX];
-    }symbol_table;
 
-    void init_symbol_table(void);
-    void insert(char *);
-    int next_symbol(char *);
+    // tokens
+    #define _boolean            1001
+    #define _break              1002
+    #define _class              1003
+    #define _double             1004
+    #define _else               1005
+    #define _extends            1006
+    #define _for                1007
+    #define _if                 1008
+    #define _implements         1009
+    #define _int                1010
+    #define _interface          1011
+    #define _new                1012
+    #define _newarray           1013
+    #define _null               1014
+    #define _println            1015
+    #define _readln             1016
+    #define _return             1017
+    #define _string             1018
+    #define _this               1019
+    #define _void               1020
+    #define _while              1021
+    #define _plus               1022
+    #define _minus              1023
+    #define _multiplication     1024
+    #define _division           1025
+    #define _mod                1026
+    #define _less               1027
+    #define _lessequal          1028
+    #define _greater            1029
+    #define _greaterequal       1030
+    #define _equal              1031
+    #define _notequal           1032
+    #define _and                1033
+    #define _or                 1034
+    #define _not                1035
+    #define _assignop           1036
+    #define _semicolon          1037
+    #define _comma              1038
+    #define _period             1039
+    #define _leftparen          1040
+    #define _rightparen         1041
+    #define _leftbracket        1042
+    #define _rightbracket       1043
+    #define _leftbrace          1044
+    #define _rightbrace         1045
+    #define _intconstant        1046
+    #define _doubleconstant     1047
+    #define _stringconstant     1048
+    #define _booleanconstant    1049
+    #define _id                 1050
+
 %}
 
 digit           [0-9]
-decint          ({digit}|[1-9]{digit}*)
+decint          (0|[1-9]{digit}*)
 hexint          0(X|x)[0-9A-Fa-f]*+
-integer         {decint}+|{hexint}
+errorint        0{digit}+
+integer         {decint}|{hexint}
 float1          {decint}+"."+{digit}*
 exponent        (E|e)(\+|\-){digit}+
 float2          {decint}+"."+{exponent}
@@ -40,7 +78,7 @@ comment         "//"((.)*)\n
 multiComment    "/*"(([^*]|(("*"+)[^*/]))*)("*"+)"/"\n    
 
 %%
-boolean         {printf("%s ", yytext); insert(yytext); return (_boolean);}
+boolean         {printf("%s ", yytext);}
 break           {printf("%s ", yytext);}
 class           {printf("%s ", yytext);}
 double          {printf("%s ", yytext);}
@@ -99,45 +137,20 @@ true|false      {printf("%s ", yytext);}
 {comment}       {; /* ignore comment */ }
 {multiComment}  {; /* ignore multi-comment */ }
 
+{errorint}      {printf("errorint ");}
 .               {;}
 %%
 
 
 // run function
-int yywrap(void) { return 1; }
+int yywrap(void) { 
+    return 1; 
+}
 
 int main(void) {
-
-    init_symbol_table();
-    printf("finish init symbol table.\n");
-
-
-
     while(yylex()) {}
     return 0;
 }
 
-/* Initialize the symbol table */
-void init_symbol_table(void) {
-  int i;
 
-  for (i = 0; i < 52; i++)
-    symbol_table.dispatch[i] = -1;
 
-  for (i = 0; i < MAX; i++)
-    symbol_table.symbol[i] = '\0';
-
-  for (i = 0; i < MAX; i++)
-    symbol_table.next[i] = -1;
-}
-
-int next_symbol (char* s) {
-  int p = s[0];
-  if (p >= 97) return p - 97 + 26; 
-  return p - 65;
-}
-
-void insert (char* s) {
-    int value = next_symbol(s);
-    printf("%d", value);
-}
